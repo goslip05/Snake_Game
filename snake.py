@@ -35,18 +35,60 @@ class Snake:
     def move(self):
         pass
         #[0,1,2] --> [0,1] --> [None,0,1] --> [-1,0,1]
+        body_copy = self.body[:-1]
+        body_copy.insert(0,body_copy[0]+self.direccion)
+        self.body = body_copy[:]
         
+    def move_up(self):
+        self.direccion = Vector2(0, -10)
+        
+    def move_down(self):
+        self.direccion = Vector2(0, 10)
+        
+    def move_left(self):
+        self.direccion = Vector2(-10, 0)
+        
+    def move_right(self):
+        self.direccion = Vector2(10, 0)
         
 
 def main():
     
     snake = Snake()
     running = True
+    
+    fps = pygame.time.Clock()
+    
     while running:
+        fps.tick(30)
         for event in  pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                
+            #metodo para mover serpiete hacia arriba
+            if event.type == pygame.KEYDOWN and snake.direccion != 10:
+                if event.key == pygame.K_UP:
+                    snake.move_up()
+                    
+            #metodo para mover serpiete hacia abajo
+            if event.type == pygame.KEYDOWN and snake.direccion != -10:
+                if event.key == pygame.K_DOWN:
+                    snake.move_down()
+                    
+            #metodo para mover serpiete hacia la izquierda
+            if event.type == pygame.KEYDOWN and snake.direccion != 10:
+                if event.key == pygame.K_LEFT:
+                    snake.move_left()
+                    
+            #metodo para mover serpiete hacia la derecha
+            if event.type == pygame.KEYDOWN and snake.direccion != -10:
+                if event.key == pygame.K_RIGHT:
+                    snake.move_right()
+                
+                
+        screen.fill(BLACK)
         snake.draw()
+        snake.move()
         pygame.display.update()
 
 main()
