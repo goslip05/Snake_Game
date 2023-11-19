@@ -19,6 +19,7 @@ pygame.init()
 
 
 size = width,height = (720,480)
+print(size[0])
 screen = pygame.display.set_mode(size)
 
 
@@ -51,6 +52,17 @@ class Snake:
     def move_right(self):
         self.direccion = Vector2(10, 0)
         
+        
+    def die(self):
+        if self.body[0].x >= size[0]+10 or self.body[0].y >= size[1]+10 or self.body[0].x <= -10 or self.body[0].y <= 10:
+            print('toco el borde')
+            return True
+        
+        #snake se toca a si misma muere
+        for i in self.body[1:]:
+            if self.body[0] == i:
+                return True
+        
 
 def main():
     
@@ -60,28 +72,28 @@ def main():
     fps = pygame.time.Clock()
     
     while running:
-        fps.tick(30)
+        fps.tick(15)
         for event in  pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
                 
             #metodo para mover serpiete hacia arriba
-            if event.type == pygame.KEYDOWN and snake.direccion != 10:
+            if event.type == pygame.KEYDOWN and snake.direccion.y != 10:
                 if event.key == pygame.K_UP:
                     snake.move_up()
                     
             #metodo para mover serpiete hacia abajo
-            if event.type == pygame.KEYDOWN and snake.direccion != -10:
+            if event.type == pygame.KEYDOWN and snake.direccion.y != -10:
                 if event.key == pygame.K_DOWN:
                     snake.move_down()
                     
             #metodo para mover serpiete hacia la izquierda
-            if event.type == pygame.KEYDOWN and snake.direccion != 10:
+            if event.type == pygame.KEYDOWN and snake.direccion.x != 10:
                 if event.key == pygame.K_LEFT:
                     snake.move_left()
                     
             #metodo para mover serpiete hacia la derecha
-            if event.type == pygame.KEYDOWN and snake.direccion != -10:
+            if event.type == pygame.KEYDOWN and snake.direccion.x != -10:
                 if event.key == pygame.K_RIGHT:
                     snake.move_right()
                 
@@ -89,6 +101,9 @@ def main():
         screen.fill(BLACK)
         snake.draw()
         snake.move()
+        if snake.die():
+            quit()
+        
         pygame.display.update()
 
 main()
