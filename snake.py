@@ -1,5 +1,6 @@
 import pygame
 import random
+import os
 from pygame.locals import *
 from pygame.math import Vector2
 
@@ -20,6 +21,18 @@ pygame.init()
 
 size = width,height = (720,480)
 print(size[0])
+
+SNAKE_BODY = pygame.transform.scale(pygame.image.load(os.path.join(r"/Users/diegojimenez/VideoJuegoUAN/Snake_Game/images/snakebody.png")),(10,10))
+
+APPLE = pygame.transform.scale(pygame.image.load(os.path.join(r"/Users/diegojimenez/VideoJuegoUAN/Snake_Game/images/manzana.png")),(10,10))
+
+SNAKE_HEAD = []
+for x in range(1,5):
+    SNAKE_HEAD += [pygame.transform.scale(pygame.image.load(os.path.join(r"/Users/diegojimenez/VideoJuegoUAN/Snake_Game/images/SnakeHead"+str(x)+".png")),(10,10))]
+print(x)
+
+EAT_SOUND = pygame.mixer.Sound("/Users/diegojimenez/VideoJuegoUAN/Snake_Game/coin.wav")
+
 screen = pygame.display.set_mode(size)
 SCORE_TEXT = pygame.font.SysFont("Russo One",15)
 
@@ -31,7 +44,19 @@ class Snake:
         
     def draw(self):
         for bloque in self.body:
-            pygame.draw.rect(screen,GREEN,(bloque.x,bloque.y,10,10))
+            #pygame.draw.rect(screen,GREEN,(bloque.x,bloque.y,10,10))
+            screen.blit(SNAKE_BODY,(bloque.x,bloque.y))
+        if self.direccion == Vector2(0, -10):
+            screen.blit(SNAKE_HEAD[0],(self.body[0].x,self.body[0].y))
+            
+        if self.direccion == Vector2(0, 10):
+            screen.blit(SNAKE_HEAD[2],(self.body[2].x,self.body[2].y))
+            
+        if self.direccion == Vector2(10,0):
+            screen.blit(SNAKE_HEAD[1],(self.body[1].x,self.body[1].y))
+            
+        if self.direccion == Vector2(-10, 0):
+            screen.blit(SNAKE_HEAD[3],(self.body[3].x,self.body[3].y))
             
     def move(self):
         pass
@@ -75,7 +100,8 @@ class Apple:
         self.generate()
         
     def draw(self):
-        pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,10,10))
+        #pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,10,10))
+        screen.blit(APPLE,(self.pos.x,self.pos.y))
         
     def generate(self):
         self.x = random.randrange(0, size[0]/10)
@@ -130,7 +156,7 @@ def main():
                     snake.move_right()
                 
                 
-        screen.fill(BLACK)
+        screen.fill((175,215,70))
         snake.draw()
         apple.draw()
         snake.move()
@@ -140,6 +166,7 @@ def main():
             
         if apple.check_collision(snake):
             score+=1
+            EAT_SOUND.play()
             
         text = SCORE_TEXT.render("Score: {}".format(score),1,WHITE)
         screen.blit(text,(size[0]-text.get_width()-10,10))
