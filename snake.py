@@ -21,7 +21,7 @@ pygame.init()
 size = width,height = (720,480)
 print(size[0])
 screen = pygame.display.set_mode(size)
-
+SCORE_TEXT = pygame.font.SysFont("Russo One",15)
 
 class Snake:
     def __init__(self):
@@ -141,7 +141,8 @@ def main():
         if apple.check_collision(snake):
             score+=1
             
-        
+        text = SCORE_TEXT.render("Score: {}".format(score),1,WHITE)
+        screen.blit(text,(size[0]-text.get_width()-10,10))
         pygame.display.update()
 
 main()
