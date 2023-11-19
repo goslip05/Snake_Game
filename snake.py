@@ -1,5 +1,5 @@
 import pygame
-#from rect import *
+import random
 from pygame.locals import *
 from pygame.math import Vector2
 
@@ -36,10 +36,16 @@ class Snake:
     def move(self):
         pass
         #[0,1,2] --> [0,1] --> [None,0,1] --> [-1,0,1]
-        body_copy = self.body[:-1]
-        body_copy.insert(0,body_copy[0]+self.direccion)
-        self.body = body_copy[:]
-        
+        if self.add  == True:
+            body_copy = self.body
+            body_copy.insert(0,body_copy[0]+self.direccion)
+            self.body = body_copy[:]
+            self.add = False
+        else:
+            body_copy = self.body[:-1]
+            body_copy.insert(0,body_copy[0]+self.direccion)
+            self.body = body_copy[:]
+            
     def move_up(self):
         self.direccion = Vector2(0, -10)
         
@@ -63,16 +69,42 @@ class Snake:
             if self.body[0] == i:
                 return True
         
+        
+class Apple:
+    def __init__(self):
+        self.generate()
+        
+    def draw(self):
+        pygame.draw.rect(screen,RED,(self.pos.x,self.pos.y,10,10))
+        
+    def generate(self):
+        self.x = random.randrange(0, size[0]/10)
+        self.y = random.randrange(0, size[1]/10)
+        self.pos = Vector2(self.x*10,self.y*10)
+        
+    def check_collision(self,snake):
+        if snake.body[0] == self.pos:
+            self.generate()
+            snake.add = True
+            return True
+        
+        for bloque in snake.body[1:]:
+            if self.pos == bloque:
+                self.generate()
+        
+        return False
 
 def main():
     
     snake = Snake()
+    apple = Apple()
     running = True
+    score = 0
     
     fps = pygame.time.Clock()
     
     while running:
-        fps.tick(15)
+        fps.tick(5)
         for event in  pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -100,9 +132,15 @@ def main():
                 
         screen.fill(BLACK)
         snake.draw()
+        apple.draw()
         snake.move()
+        
         if snake.die():
             quit()
+            
+        if apple.check_collision(snake):
+            score+=1
+            
         
         pygame.display.update()
 
