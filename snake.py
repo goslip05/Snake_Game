@@ -29,7 +29,8 @@ APPLE = pygame.transform.scale(pygame.image.load(os.path.join(r"/Users/diegojime
 SNAKE_HEAD = []
 for x in range(1,5):
     SNAKE_HEAD += [pygame.transform.scale(pygame.image.load(os.path.join(r"/Users/diegojimenez/VideoJuegoUAN/Snake_Game/images/SnakeHead"+str(x)+".png")),(10,10))]
-print(x)
+    #print(x)
+
 
 EAT_SOUND = pygame.mixer.Sound("/Users/diegojimenez/VideoJuegoUAN/Snake_Game/coin.wav")
 
@@ -48,15 +49,19 @@ class Snake:
             screen.blit(SNAKE_BODY,(bloque.x,bloque.y))
         if self.direccion == Vector2(0, -10):
             screen.blit(SNAKE_HEAD[0],(self.body[0].x,self.body[0].y))
+            #print(SNAKE_HEAD[0])
             
         if self.direccion == Vector2(0, 10):
-            screen.blit(SNAKE_HEAD[2],(self.body[2].x,self.body[2].y))
+            screen.blit(SNAKE_HEAD[2],(self.body[0].x,self.body[0].y))
+            #print(SNAKE_HEAD[2])
             
         if self.direccion == Vector2(10,0):
-            screen.blit(SNAKE_HEAD[1],(self.body[1].x,self.body[1].y))
+            screen.blit(SNAKE_HEAD[1],(self.body[0].x,self.body[0].y))
+            #print(SNAKE_HEAD[1])
             
         if self.direccion == Vector2(-10, 0):
-            screen.blit(SNAKE_HEAD[3],(self.body[3].x,self.body[3].y))
+            screen.blit(SNAKE_HEAD[3],(self.body[0].x,self.body[0].y))
+            #print(SNAKE_HEAD[3])
             
     def move(self):
         pass
