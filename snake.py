@@ -45,7 +45,7 @@ SCORE_TEXT = pygame.font.SysFont("Russo One",15)
 class Snake:
     def __init__(self):
         self.body = [Vector2(20,100),Vector2(20,110),Vector2(20,120)]
-        self.direccion = Vector2(0,-20)
+        self.direccion = Vector2(20,0)
         self.add = False
         
         
@@ -137,6 +137,7 @@ class SceneManager:
 
     def set_scene(self, new_scene):
         self.current_scene = new_scene
+        pygame.display.set_caption(new_scene.get_caption())
         
         
     def run_scene(self):
@@ -149,6 +150,10 @@ class MainMenuScene:
         self.scene_manager = scene_manager
         self.high_score = high_score
         self.background_image = pygame.image.load(r"C:\Snake_Game\images\snake.png")
+        self.caption = "Snake Game UAN - Menú Principal"
+        
+    def get_caption(self):
+        return self.caption
 
     def handle_events(self, events):
         for event in events:
@@ -161,7 +166,7 @@ class MainMenuScene:
         screen.fill((175, 215, 70))
         #screen.blit(self.background_image, (0, 0))
 
-        # Dibuja el texto del menú
+        #dibujar textos
         font = pygame.font.SysFont("Russo One", 50)
         font2 = pygame.font.SysFont("Russo One", 20)
         text_play = font.render("Snake Game UAN", True, MAGENTA)
@@ -191,7 +196,7 @@ class MainMenuScene:
             self.draw(screen)
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == K_RETURN:
-                    # Transition to the GameScene
+                    
                     self.scene_manager.set_scene(GameScene(self.scene_manager))
                     return
                 
@@ -204,7 +209,11 @@ class GameScene:
         self.score = 0
         self.load_high_score()
         self.collision_time = 0
+        self.caption = "Snake Game UAN - Jugando"
         
+    def get_caption(self):
+        return self.caption
+    
     def save_high_score(self):
         with open("high_score.txt", "w") as file:
             file.write(str(self.high_score))
@@ -214,7 +223,6 @@ class GameScene:
             with open("high_score.txt", "r") as file:
                 self.high_score = int(file.read())
         except FileNotFoundError:
-            # Si el archivo no existe, establece un récord inicial.
             self.high_score = 0
 
     def handle_events(self, events):
@@ -245,7 +253,7 @@ class GameScene:
                     self.snake.move_right()
 
     def draw(self, screen):
-        # Limpia la pantalla
+        
         screen.fill((175, 215, 70))
         
        
@@ -307,20 +315,24 @@ class GameOverScene:
         self.score = score
         self.background_image = pygame.image.load(r"C:\Snake_Game\images\gameover.png")
         self.background_image = pygame.transform.scale(self.background_image, (200, 200))
+        self.caption = "Snake Game UAN - Game Over"
 
+    def get_caption(self):
+        return self.caption
+    
     def handle_events(self, events):
         for event in events:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
 
-            # Manejar eventos adicionales según sea necesario
+            
 
     def draw(self, screen):
-        # Limpia la pantalla
+        
         screen.fill((175, 215, 70))
 
-        # Dibuja el texto de Game Over y el puntaje
+        
         font = pygame.font.SysFont("Russo One", 50)
         font2 = pygame.font.SysFont("Russo One", 30)
         text_game_over = font.render("Game Over", True, WHITE)
@@ -344,7 +356,7 @@ class GameOverScene:
             events = pygame.event.get()
             self.handle_events(events)
             self.draw(screen)
-            high_score = 0  # Puedes establecer un valor predeterminado si es necesario
+            high_score = 0  
             with open("high_score.txt", "r") as file:
                 try:
                     high_score = int(file.read())
@@ -353,7 +365,7 @@ class GameOverScene:
 
             for event in events:
                 if event.type == pygame.KEYDOWN and event.key == K_RETURN:
-                    # Volver a la escena del menú principal al presionar Enter
+                    # Volver a la escena
                     self.scene_manager.set_scene(MainMenuScene(self.scene_manager,high_score))
                     return  
         
@@ -366,7 +378,7 @@ def main():
 
     scene_manager = SceneManager()
     
-    high_score = 0  # Puedes establecer un valor predeterminado si es necesario
+    high_score = 0  
     with open("high_score.txt", "r") as file:
         try:
             high_score = int(file.read())
