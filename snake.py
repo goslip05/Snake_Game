@@ -48,6 +48,7 @@ class Snake:
         self.direccion = Vector2(0,-10)
         self.add = False
         
+        
     def draw(self):
         for bloque in self.body:
             #pygame.draw.rect(screen,GREEN,(bloque.x,bloque.y,10,10))
@@ -136,9 +137,12 @@ class SceneManager:
 
     def set_scene(self, new_scene):
         self.current_scene = new_scene
-
+        
+        
     def run_scene(self):
-        self.current_scene.run()
+        while True:
+            self.current_scene.run()
+           
 
 class MainMenuScene:
     def __init__(self, scene_manager):
@@ -149,15 +153,10 @@ class MainMenuScene:
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == KEYDOWN:
-                if event.key == K_RETURN:
-                    scene_manager = SceneManager()
-                    print('enter')
-                    scene_manager.set_scene(GameScene(scene_manager))
-
+            
     def draw(self, screen):
         # Limpia la pantalla
-        screen.fill(BLACK)
+        screen.fill(GREEN)
 
         # Dibuja el texto del menú
         font = pygame.font.SysFont("Russo One", 50)
@@ -173,16 +172,25 @@ class MainMenuScene:
             events = pygame.event.get()
             self.handle_events(events)
             self.draw(screen)
+            for event in events:
+                if event.type == pygame.KEYDOWN and event.key == K_RETURN:
+                    # Transition to the GameScene
+                    self.scene_manager.set_scene(GameScene(self.scene_manager))
+                    return
+                
 class GameScene:
+    
     def __init__(self, scene_manager):
         self.scene_manager = scene_manager
         self.snake = Snake()
         self.apple = Apple()
+        self.score = 0
 
     def handle_events(self, events):
         for event in  events:
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
                 
             #metodo para mover serpiete hacia arriba
             if event.type == pygame.KEYDOWN and self.snake.direccion.y != 10:
@@ -208,7 +216,7 @@ class GameScene:
     def draw(self, screen):
         # Limpia la pantalla
         screen.fill((175, 215, 70))
-        score = 0
+        
         # Dibuja el juego
         self.snake.draw()
         self.apple.draw()
@@ -219,11 +227,13 @@ class GameScene:
 
         if self.apple.check_collision(self.snake):
             #EAT_SOUND.play()
-            score+=1
+            
+            self.score += 1
+            
 
-        text = SCORE_TEXT.render("Score: {}".format(score), 1, WHITE)
+        text = SCORE_TEXT.render("Score: {}".format(self.score), 1, WHITE)
         screen.blit(text, (width - text.get_width() - 10, 10))
-
+        print(self.score)
         pygame.display.update()
 
     def run(self):
@@ -291,12 +301,13 @@ class GameScene:
         
 def main():
     pygame.init()
+    
 
     size = width, height = (720, 480)
     screen = pygame.display.set_mode(size)
 
     scene_manager = SceneManager()
-    scene_manager.set_scene(GameScene(scene_manager))
+    scene_manager.set_scene(MainMenuScene(scene_manager))
 
     while True:
         scene_manager.run_scene()
